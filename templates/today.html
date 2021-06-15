@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if request.user.is_authenticated and not request.user.is_superuser %}
+     <div class="alert alert-warning" role="alert">
+                <div class="d-flex">
+                    <div class="p-2">Приветствую, {{ request.user }}!</div>
+                    <div class="ml-auto p-2">
+                        <form method="get" action="{% url 'logout' %}">
+                            <button type="submit" class="btn btn-outline-danger" value="Logout"> Выйти из
+                                аккаунта
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+      {% elif request.user.is_superuser %}
+           <div class="alert alert-warning" role="alert">
+                <div class="d-flex">
+                    <div class="p-2">Аккаунт администратора - {{ request.user }}!</div>
+                    <div class="ml-auto p-2">
+                         <form method="get" action="{% url 'logout' %}">
+                            <button type="submit" class="btn btn-outline-danger" value="Logout"> Выйти из
+                                аккаунта
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+        <a href="{% url 'login' %}">Login</a>
+        <br>
+        <a href="{% url 'register' %}">Registration</a>
+        <br>
+        <br>
+
+{% endif %}
+     <br>
+        <br>
+    <a href="{% url 'main' %}">На главную</a>
+     <div>
+                                <form method="get" action="{% url 'today_sessions'  %}">
+                                    <input type="hidden" name="hall_id" value="{{ request.GET.hall_id }}">
+                                    {% if request.GET.day == 'today' %}
+                                       <input  type="hidden" name="day" value="today">
+                                    {% else %}
+                                       <input  type="hidden" name="day" value="tomorrow">
+                                    {% endif %}
+                                    <input  type="hidden" name="sort" value="price">
+                                    <button type="submit" class="btn btn-warning" value="Update"> Отсосртировать по цене </button>
+                        </form>
+            <br>
+                                <form method="get" action="{% url 'today_sessions'  %}">
+                                    <input type="hidden" name="hall_id" value="{{ request.GET.hall_id }}">
+                                    <input  type="hidden" name="sort" value="time">
+                                    {% if request.GET.day == 'today' %}
+                                       <input  type="hidden" name="day" value="today">
+                                    {% else %}
+                                       <input  type="hidden" name="day" value="tomorrow">
+                                    {% endif %}
+                                    <button type="submit" class="btn btn-warning" value="Update"> Отсосртировать по времени начала
+                                    </button>
+                        </form>
+                                </div>
+
+
+{% for product in object_list %}
+
+                    <div style="color: whitesmoke">
+                        <div class="d-flex">
+                            <div class="p-2">
+                                <img src="/media/{{ product.image }}" width="150" height="250" >
+                            </div>
+                            <div class="p-2">
+                                <h2 style="color: #e4b101">{{ product.film }}</h2>
+                                <p>Зал: {{ product.hall.title }}</p>
+                                <p>Дата сеанса: {{ product.start_date }}</p>
+                                <p>Начало сеанса: {{ product.started_at }}</p>
+                                <p>Конец сеанса: {{ product.finished_at }}</p>
+                                <p>Цена билета: {{ product.price}} ₴</p>
+                                <p>Всего мест в зале: {{ product.hall.seats }}</p>
+                                <p>Куплено билетов: {{ product.purchased_seats }}</p>
+                              {% if request.user.is_superuser  %}
+                                  <p><div class="ml-auto p-2">
+                            <form method="get" action="{% url 'session_update' product.pk %}">
+                                <input  type="hidden" name="session_id" value="{{ product.pk }}">
+                                <input  type="hidden" name="hall_id" value="{{ product.hall.pk }}">
+                                <button type="submit" class="btn btn-warning" value="Update"> Обновить Сеанс</button>
+                            </form>
+                        </div></p>
+                                {% endif %}
+<br>
+    {% if request.user.is_authenticated and not request.user.is_superuser %}
+  <form  method="post" action="{% url 'purchase' %}">
+    {% csrf_token %}
+      <div>Купить билеты:</div>
+    {{purchase_form }}
+    <input type="hidden" name="session_id" value="{{ product.id }}">
+      <input type="hidden" name="customer_id" value="{{ request.user.id}}">
+    <button type="submit" class="btn btn-success" value="Purchase"> Купить</button>
+       <br>
+      {% endif %}
+
+</form>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                <hr style="background-color: #e4b101">
+            {% endfor %}
+    <nav aria-label="Page navigation example" style="position: absolute;
+    bottom: 0;
+    left: 0;">
+  <ul class="pagination">
+   {% if page_obj.has_previous %}
+    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+    {% endif %}
+      <li class="page-item"><a class="page-link" href="?page=1">1</a></li>
+      {% if page_obj.has_next %}
+    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+      <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a></li>
+  {% endif %}
+  </ul>
+
+</nav>
+{% endblock %}

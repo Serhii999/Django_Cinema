@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="alert alert-success" role="alert">
+        <div class="d-flex">
+            <div class="p-2">
+                <h4 class="alert-heading">Корзина покупок</h4>
+            </div>
+            <div class="ml-auto p-2">
+                <form method="get" action="{% url 'main' %}">
+                    <button type="submit" class="btn btn-success" value="Base page">Вернуться на главную страницу
+                    </button>
+                </form>
+            </div>
+        </div>
+        <p>Здесь отображаются все приобретенные товары</p>
+
+
+    </div>
+
+    {% for purchase in object_list %}
+
+            <div style="color: whitesmoke">
+                <div class="d-flex">
+                    <div class="p-2">
+                        <img src="/media/{{ purchase.session.image }}" width="150" height="250" alt="{{ purchase.session.film }}">
+                    </div>
+                    <div class="p-2">
+                        <h2 style="color: #e4b101">{{ purchase.session.film }}</h2>
+                        <p>Стоимость товара: {{ purchase.session.price }} ₴</p>
+                        <p>Количество купленных  билетов: {{ purchase.quantity }}</p>
+                        <p>Дата сеанса: {{ purchase.session.start_date }}</p>
+                        <p>Время начала: {{ purchase.session.started_at }}</p>
+                        <p>Конец сеанса: {{ purchase.session.finished_at }}</p>
+                        {{ purchase.session.id }}
+
+                    </div>
+                    <div class="ml-auto p-2">
+
+                    </div>
+                </div>
+                <hr style="background-color: #e4b101">
+            </div>
+        </form>
+    {% endfor %}
+    <nav aria-label="Page navigation example" style="position: absolute;
+    bottom: 0;
+    left: 0;">
+  <ul class="pagination">
+   {% if page_obj.has_previous %}
+    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+    {% endif %}
+      <li class="page-item"><a class="page-link" href="?page=1">1</a></li>
+      {% if page_obj.has_next %}
+    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+      <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a></li>
+  {% endif %}
+  </ul>
+
+</nav>
+{% endblock %}

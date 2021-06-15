@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div style="color: #e4b101; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%)">
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-success" value="Registration"> Register</button>
+        </form>
+
+    </div>
+{% endblock %}

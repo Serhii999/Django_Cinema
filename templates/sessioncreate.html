@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+   <a href="{% url 'main' %}">To the main page</a>
+
+    <div style="color: #e4b101; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%)">
+
+        <form method="post"  enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="hidden" name="hall_id" value="{{ request.GET.hall_id }}">
+            <button type="submit" class="btn btn-success" value="Create product"> Создать </button>
+        </form>
+    </div>
+
+{% endblock %}

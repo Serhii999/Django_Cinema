@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="color: #e4b101; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%)">
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form }}
+            <div class="col-5">
+                <button type="submit" class="btn btn-warning" value="Login"> Login</button>
+            </div>
+            {{ form.errors }}
+        </form>
+    </div>
+
+{% endblock %}
